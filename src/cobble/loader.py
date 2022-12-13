@@ -161,13 +161,12 @@ def load(root, build_dir):
         name = build_vars.get('git_version', 'name', default = repo_name_default),
         rev = build_vars.get('git_version', 'rev', default = 'HEAD'),
     )
-    git_versioner = GitVersioner.from_config(git_versioner_config)
 
-    try:
-        git_version_kv = cobble.git_version.key_values(git_versioner)
-        for k in cobble.git_version.KEYS: kr.define(k)
-    except subprocess.CalledProcessError:
-        git_version_kv = {}
+    git_versioner = GitVersioner.from_config(git_versioner_config)
+    git_version_kv = cobble.git_version.key_values(git_versioner)
+
+    for k in cobble.git_version.KEYS:
+        kr.define(k)
 
     # Recursively read in BUILD.conf and eval it for its side effects
     load_project(

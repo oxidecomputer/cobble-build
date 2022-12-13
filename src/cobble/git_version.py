@@ -165,7 +165,7 @@ class GitClient:
         return output.strip()
 
     def head_branch_name(self) -> str:
-        args = ["symbolic-ref", "--short", "-q", "HEAD"]
+        args = ["symbolic-ref", "--short", "HEAD"]
         output = self._git(args)
         return output.strip()
 
@@ -219,14 +219,12 @@ class GitClient:
         self, args: Union[List[str], Tuple[str]]
     ) -> subprocess.CompletedProcess:
         args = [self.cmd] + list(args)
-        result = subprocess.run(
+        return subprocess.check_output(
             args,
-            check=True,
-            capture_output=True,
             cwd=self.working_dir,
-            text=True
+            text=True,
+            stderr=subprocess.STDOUT,
         )
-        return result.stdout
 
 
 class GitVersionerConfig:
@@ -312,8 +310,11 @@ class GitVersioner:
     def head_branch_name(self) -> str:
         try:
             return self.git_client.head_branch_name()
-        except subprocess.CalledProcessError:
-            return 'detached'
+        except subprocess.CalledProcessError as e:
+            if 'not a symbolic ref' in e.output:
+                return 'detached'
+            else:
+                raise e
 
     @property
     def sha1(self) -> str:
