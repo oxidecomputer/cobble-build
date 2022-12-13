@@ -283,7 +283,7 @@ class GitVersioner:
     @property
     def version_name(self) -> str:
         rev = self.revision
-        hash_ = self.sha_short
+        hash_ = self.sha1_short
         additional_commits = self.feature_branch_commits
         name = self.name
         dirty_part = ""
@@ -310,14 +310,17 @@ class GitVersioner:
 
     @property
     def head_branch_name(self) -> str:
-        return self.git_client.head_branch_name()
+        try:
+            return self.git_client.head_branch_name()
+        except subprocess.CalledProcessError:
+            return 'detached'
 
     @property
     def sha1(self) -> str:
         return self.git_client.sha1(self.config.rev)
 
     @property
-    def sha_short(self) -> str:
+    def sha1_short(self) -> str:
         return self.sha1[0:8]
 
     @property
@@ -397,7 +400,7 @@ def key_values(versioner):
         GIT_VERSION_CODE.name: str(versioner.revision),
         GIT_VERSION_NAME.name: versioner.version_name,
         GIT_VERSION_REV_SHA1.name: versioner.sha1,
-        GIT_VERSION_REV_SHA1_SHORT.name: versioner.sha_short,
+        GIT_VERSION_REV_SHA1_SHORT.name: versioner.sha1_short,
         GIT_VERSION_BASE_BRANCH.name: versioner.config.base_branch,
         GIT_VERSION_BASE_BRANCH_COMMIT_COUNT.name: \
             str(len(versioner.base_branch_commits)),

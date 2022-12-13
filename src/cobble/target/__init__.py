@@ -488,11 +488,15 @@ def print_evaluation_error(e):
         # The exception does not seem to contain much useful data to print.
         # Instead of printing an empty line, leaving the human in the dark as to
         # what happened, print the traceback so they have at least something.
-        print('--- traceback ---', file = sys.stderr)
+        print('--- traceback ---', file=sys.stderr)
         traceback.print_tb(e.__traceback__, file=sys.stderr)
     else:
-        print('--- message ---', file = sys.stderr)
-        print(*e.cause.args, file=sys.stderr)
+        print('--- message ---', file=sys.stderr)
+        if isinstance(e.cause, KeyError):
+            print('Key %s missing from environment' % e.cause.args[0], file=sys.stderr)
+        else:
+            print(*e.cause.args, file=sys.stderr)
+            traceback.print_tb(e.__traceback__, file=sys.stderr)
     print('--- outer environment ---', file=sys.stderr)
     if env is not None:
         for k in env: print(k, '=', env[k], file=sys.stderr)
