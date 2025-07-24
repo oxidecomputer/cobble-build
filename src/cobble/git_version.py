@@ -43,7 +43,7 @@ GIT_VERSION_FEATURE_BRANCH_TIME_COMPONENT = cobble.env.immutable_string_key(
 GIT_VERSION_COMPLETE_FIRST_ONLY_BASE_BRANCH_COMMIT_COUNT = \
         cobble.env.immutable_string_key(
             'git_version_complete_first_only_base_branch_commit_count',
-            help = 'Uhh... \o/. Something base branch commit count.')
+            help = 'Uhh... \\o/. Something base branch commit count.')
 GIT_VERSION_LOCAL_CHANGES = cobble.env.immutable_string_key(
         'git_version_local_changes',
         help = 'A representation of local changes of the project Git branch.')
