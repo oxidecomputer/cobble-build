@@ -391,7 +391,7 @@ def _load_project():
     Assumes build.ninja exists on disk.
     """
     project_path = None
-    project_path_re = re.compile('^#\sproject_path=(.*)$')
+    project_path_re = re.compile(r'^#\sproject_path=(.*)$')
 
     with open('build.ninja') as build_ninja:
         # Try and read the Project path out of the first few lines.
